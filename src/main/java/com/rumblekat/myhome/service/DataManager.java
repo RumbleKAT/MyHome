@@ -1,12 +1,13 @@
 package com.rumblekat.myhome.service;
 
 import com.rumblekat.myhome.Home.HomeDto;
+import org.json.JSONObject;
+import org.json.XML;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -14,7 +15,7 @@ import java.net.URLEncoder;
 @Service
 public class DataManager {
 
-    public String getHome(String serviceUrl, String serviceKey, HomeDto homeDto) throws IOException {
+    public JSONObject getHome(String serviceUrl, String serviceKey, HomeDto homeDto) throws IOException {
         StringBuilder urlBuilder = new StringBuilder(serviceUrl); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + serviceKey); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("startmonth","UTF-8") + "=" + URLEncoder.encode(homeDto.getStartDt(), "UTF-8")); /*월 단위 모집공고일 (검색시작월)*/
@@ -41,7 +42,11 @@ public class DataManager {
         }
         rd.close();
         conn.disconnect();
-        return sb.toString();
+        return convertJson(sb.toString());
+    }
+
+    public JSONObject convertJson(String xml){
+        return XML.toJSONObject(xml);
     }
 
 }
